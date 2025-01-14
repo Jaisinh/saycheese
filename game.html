@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Click Game</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #222; color: #fff; font-family: Arial, sans-serif; }
+    #game { position: relative; width: 100vw; height: 100vh; }
+    .circle {
+      position: absolute; border-radius: 50%; background: #f00;
+    }
+    #score, #timer {
+      position: absolute; top: 10px; font-size: 20px; padding: 5px;
+    }
+    #score { left: 10px; }
+    #timer { right: 10px; }
+  </style>
+</head>
+<body>
+  <div id="score">Score: 0</div>
+  <div id="timer">Time: 60s</div>
+  <div id="game"></div>
+  <script>
+    const game = document.getElementById("game");
+    const scoreEl = document.getElementById("score");
+    const timerEl = document.getElementById("timer");
+
+    let score = 0, timeLeft = 60, circleSize = 50;
+    let gameInterval, timerInterval;
+
+    function spawnCircle() {
+      const circle = document.createElement("div");
+      circle.className = "circle";
+      circle.style.width = `${circleSize}px`;
+      circle.style.height = `${circleSize}px`;
+      circle.style.left = `${Math.random() * (window.innerWidth - circleSize)}px`;
+      circle.style.top = `${Math.random() * (window.innerHeight - circleSize)}px`;
+
+      circle.onclick = () => {
+        score++;
+        scoreEl.textContent = `Score: ${score}`;
+        circle.remove();
+        circleSize = Math.max(10, circleSize - 2); // Decrease size but not below 10px
+        spawnCircle();
+      };
+
+      game.appendChild(circle);
+    }
+
+    function startGame() {
+      spawnCircle();
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+    }
+
+    function endGame() {
+      clearInterval(timerInterval);
+      game.innerHTML = `<div style="color: white; text-align: center; font-size: 30px;">Game Over!<br>Your Score: ${score}</div>`;
+    }
+
+    startGame();
+  </script>
+</body>
+</html>
+'''
